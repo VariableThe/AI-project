@@ -17,11 +17,6 @@ ENV/
 env.bak/
 venv.bak/
 
-# Test artifacts (but not our test files)
-test_*/
-!test_edge_cases.py
-!basic_test.py
-
 # Logs
 *.log
 
