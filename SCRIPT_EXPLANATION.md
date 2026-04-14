@@ -7,7 +7,7 @@ This document provides a technical breakdown of the logic implemented in `loan_o
 ## 1. The `Loan` Class (The Environment State)
 Each `Loan` object tracks its own balance, interest rate, and minimum payment.
 - **`apply_interest()`**: This simulates the passage of time. Before any payments are made, the interest is added to the principal.
-- **`get_heuristic_interest()` ($h(n)$)**: This is the "Informed Search" component. It estimates the remaining interest by simulating a "greedy" path where only minimum payments are made. This value is **admissible** (it doesn't over-estimate the cost if we assume we always pay at least the minimum), allowing $A^*$ to find the optimal solution efficiently.
+- **`get_heuristic_interest()` ($h(n)$)**: This is the "Informed Search" component. It estimates the remaining interest by calculating just one month's interest based on current balances and rates. This value is **admissible** (it never over-estimates the true minimum future cost since extra payments can only reduce future interest), allowing $A^*$ to find the optimal solution efficiently.
 
 ## 2. The `ConstraintSolver` Class (CSP & AC-3)
 At every month, the agent must decide how to distribute the budget. This is a **Constraint Satisfaction Problem**.

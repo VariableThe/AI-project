@@ -17,5 +17,9 @@ ENV/
 env.bak/
 venv.bak/
 
+# Test artifacts
+test_*/
+test_dir/
+
 # Logs
 *.log
