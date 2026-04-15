@@ -63,8 +63,8 @@ class State:
         return self.f_cost < other.f_cost
 
     def get_id(self):
-        # Hash with 2 decimal places precision to fix collision issue
+        # Hash to the nearest integer to group micro-permutations
         return (
             self.month,
-            tuple(sorted([(l.name, round(l.principal, 2)) for l in self.loans])),
+            tuple(sorted([(l.name, int(round(l.principal, 0))) for l in self.loans])),
         )

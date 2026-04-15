@@ -16,7 +16,7 @@ class ConstraintSolver:
     def setup_domains(self):
         total_min_required = sum(l.min_payment for l in self.loans)
         # Maximum we can spend on debt this month = cash on hand + budget income - emergency reserve
-        max_debt_payment = self.current_cash + self.budget - self.emergency_floor
+        max_debt_payment = min(self.budget, self.current_cash + self.budget - self.emergency_floor)
         # Extra available beyond minimum payments
         available_extra = max(0, max_debt_payment - total_min_required)
 
@@ -29,16 +29,7 @@ class ConstraintSolver:
                 max_useful_extra = l.principal + (l.principal * rate) - l.min_payment
                 actual_max_extra = min(available_extra, max_useful_extra)
 
-                step_amount = self.granularity
-                current_extra = step_amount
-                while current_extra < actual_max_extra:
-                    options.append(l.min_payment + current_extra)
-                    current_extra += step_amount
-
-                if (
-                    actual_max_extra > 0
-                    and (l.min_payment + actual_max_extra) not in options
-                ):
+                if actual_max_extra > 0:
                     options.append(l.min_payment + actual_max_extra)
 
             self.domains[l.name] = options
@@ -100,4 +91,9 @@ class ConstraintSolver:
                 find_combinations(idx + 1, current_map)
 
         find_combinations(0, {})
+        
+        if allocations:
+            max_payment = max(sum(a.values()) for a in allocations)
+            allocations = [a for a in allocations if sum(a.values()) == max_payment]
+            
         return allocations
